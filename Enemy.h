@@ -9,27 +9,19 @@
 #include "entity.h"
 #include "randoms.h"
 #include "textDisplay.h"
+#include "Organism.h"
 
-class Enemy : public entity
+class Enemy : public entity, public Organism
 {
 private:
-    int attackDamage = 2;
-    int counter = 0;
-    int hp = 2;
-    int walkingCounter = 0;
+    int counter = 0; // for ai
     int movementLength = 100;
-    float movementSpeed = .5;
 public:
-    bool destroy = false;
     Enemy();
     void update();
+
+    // sets random directiom and moves enemy
     void updateMovement();
-    textDisplay takeDamage(textDisplay&, int);
-    int getHp() const;
-    void setHp(int);
-    int getAttackDamage() const;
-    float getMovementSpeed() const;
-    void setAttackDamage(int);
 };
 
 

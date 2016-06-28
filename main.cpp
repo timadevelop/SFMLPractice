@@ -11,9 +11,11 @@ using namespace std;
 #include "textDisplay.h"
 #include "Wall.h"
 
+// deletes enemies with destroy == true from enemies vector
 template<class entityType>
-bool destroyEntities(vector<entityType>& entities); // deletes enemies with destroy == true from enemies vector
+bool destroyEntities(vector<entityType>& entities);
 
+// adds new hint in bottom right corner and deletes excess hint
 void addHint(vector<textDisplay>& hints, textDisplay& hint, std::string txt, int);
 
 
@@ -26,6 +28,7 @@ int main()
     int counter = 0;
     int counter2 = 0;
     int counter3 = 0;
+
     const int X_MAX = 1800;
     const int Y_MAX = 1080;
     sf::RenderWindow window(sf::VideoMode(X_MAX, Y_MAX), "SFML Application");
@@ -164,7 +167,7 @@ int main()
             counter2 = 0;
             for (iterEnemies = enemies.begin(); iterEnemies != enemies.end(); iterEnemies++, counter2++) {
                 if (projectiles[counter].intersects(enemies[counter2])) {
-                    enemies[counter2].takeDamage(msg, projectiles[counter].getAttackDamage());
+                    enemies[counter2].takeDamage(msg, projectiles[counter].getAttackDamage(), enemies[counter2].rect.getPosition());
                     projectiles[counter].destroy = true;
                     msgs.push_back(msg);
                 }
@@ -242,9 +245,16 @@ int main()
             window.draw(enemies[counter].sprite);
         }
 
+        // Drawing damage
+        counter = 0;
+        for (textIterator = msgs.begin(); textIterator != msgs.end(); textIterator++) {
+            msgs[counter].update();
+            window.draw(msgs[counter].text);
+            counter++;
+        }
+
         Player1.update();
         window.draw(Player1.sprite);
-
         // Update & draw information
 
         gameInfo.setString("Hero HP: " + to_string(Player1.getHp()) + " | Enemies: " + to_string(enemies.size()) + " | Weapon: " + Player1.getProjectile().getName());
@@ -255,17 +265,6 @@ int main()
         counter = 0;
         for (hintIter = hints.begin(); hintIter != hints.end(); hintIter++) {
             window.draw(hints[counter].text);
-            counter++;
-        }
-
-
-        // ****************************
-        //          Damage showing
-        // ****************************
-        counter = 0;
-        for (textIterator = msgs.begin(); textIterator != msgs.end(); textIterator++) {
-            msgs[counter].update();
-            window.draw(msgs[counter].text);
             counter++;
         }
 

@@ -15,7 +15,7 @@ public:
     sf::RectangleShape rect;
     sf::Sprite sprite;
     sf::Text text;
-    bool intersects(const entity &e) const; // intersection another with entity
+    bool intersects(const entity &e) const;
     virtual void backAway(int);
 };
 

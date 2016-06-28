@@ -14,7 +14,6 @@ textDisplay::textDisplay() {
 void textDisplay::update() {
 
     text.move(moveVector);
-
     counter++;
     if(counter >= lifeTime)
         destroy = true;

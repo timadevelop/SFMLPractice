@@ -8,30 +8,22 @@
 #include "entity.h"
 #include "projectile.h"
 #include "textDisplay.h"
+#include "Organism.h"
 
 
-class Player : public entity
+class Player : public entity, public Organism
 {
 private:
-    int walkingCounter = 0;
-    int hp = 20;
     Projectile projectile;
-    // value of current speed of Player/
-    float movementSpeed = 2;
     float normalSpeed = 2;
 public:
-    int attackDamage = 5;
     Player();
     void update();
-    void updateMovement();
+    void updateMovement(); // update Player if some Key from [Up, Down, Right, Left] is pressed
     void backAway(int);
-    // interface
-    int getHp() const;
-    void setHp(int);
-    Projectile getProjectile() const;
+    textDisplay takeDamage(textDisplay&, int); // returns damage message with Player position
     Projectile fire(); // returns new projectile
-    textDisplay takeDamage(textDisplay&, int);
-    float getMovementSpeed() const;
+    Projectile getProjectile() const;
 };
 
 

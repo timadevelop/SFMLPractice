@@ -8,7 +8,6 @@ Projectile::Projectile() {
     rect.setSize(sf::Vector2f(10,10));
     rect.setPosition(0,0);
     rect.setFillColor(sf::Color::White);
-    //sprite.setTextureRect(sf::IntRect(0,0,32,32));
 }
 
 void Projectile::update() {
@@ -41,4 +40,9 @@ float Projectile::getRechargeSpeed() const {
 
 std::string Projectile::getName() const {
     return name;
+}
+
+void Projectile::setName(std::string str)
+{
+    name = str;
 }

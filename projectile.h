@@ -13,10 +13,10 @@ class Projectile : public entity
 private:
     int attackDamage = 1;
     int movementSpeed = 10;
+    int counterLifeTime = 0 , lifeTime = 200;
     float rechargeSpeed = 70;
     std::string name = "Shotgun";
 public:
-    int counterLifeTime = 0 , lifeTime = 200;
     Projectile();
     void update();
     bool destroy = false;
@@ -24,6 +24,7 @@ public:
     void setAttackDamage(int);
     float getRechargeSpeed() const;
     std::string getName() const;
+    void setName(std::string);
 };
 
 

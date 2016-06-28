@@ -7,25 +7,15 @@
 
 Enemy::Enemy()
 {
+    hp = 2;
+    attackDamage = 2;
+    movementSpeed = .5;
     rect.setSize(sf::Vector2f(32,32));
     rect.setPosition(0, 33);
     rect.setFillColor(sf::Color::White);
     sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
 }
 
-
-textDisplay Enemy::takeDamage(textDisplay &msg, int damage){
-
-    hp -= damage;
-    // Text display
-    msg.text.setString(std::to_string(-damage));
-    msg.text.setPosition(rect.getPosition());
-    msg.text.setColor(sf::Color::White);
-    if (hp <= 0) {
-        destroy = true;
-    }
-    return msg;
-}
 
 void Enemy::update() {
     sprite.setPosition(rect.getPosition());
@@ -82,28 +72,4 @@ void Enemy::updateMovement() {
         counter = 0;
     }
 
-}
-
-
-int Enemy::getHp() const
-{
-    return hp;
-}
-
-void Enemy::setHp(int value)
-{
-    hp = value;
-}
-
-int Enemy::getAttackDamage() const {
-    return attackDamage;
-}
-
-void Enemy::setAttackDamage(int value) {
-    attackDamage = value;
-}
-
-float Enemy::getMovementSpeed() const
-{
-    return movementSpeed;
 }

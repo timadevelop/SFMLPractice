@@ -14,15 +14,15 @@
 class textDisplay : public entity
 {
 private:
+    int lifeTime = 100;
+    int counter = 0;
+    std::string str = "Default";
     float movementSpeed = 1;
     sf::Vector2f moveVector = sf::Vector2f(-0.3 ,-movementSpeed);
 public:
     bool destroy = false;
-    int lifeTime = 100;
-    int counter = 0;
-    std::string str = "Default";
     textDisplay();
-    void update();
+    void update(); // moves text along moveVector until counter == lifeTime
     void setMoveVector(sf::Vector2f);
 };
 

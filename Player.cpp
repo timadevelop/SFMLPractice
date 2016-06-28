@@ -7,6 +7,9 @@
 
 Player::Player()
 {
+    hp = 20;
+    movementSpeed = 2;
+    attackDamage = 5;
     rect.setSize(sf::Vector2f(32,32));
     rect.setPosition(300, 200);
     rect.setFillColor(sf::Color::White);
@@ -36,18 +39,7 @@ textDisplay Player::takeDamage(textDisplay& msg, int damage) {
 
     backAway(damage*10); // distance
     return msg;
- }
-
-void Player::update() {
-    sprite.setPosition(rect.getPosition());
-    updateMovement();
 }
-
-float Player::getMovementSpeed() const
-{
-    return movementSpeed;
-}
-
 
 // need to fix bug if in updatemovement dont use else
 void Player::backAway(int distance)
@@ -77,10 +69,17 @@ void Player::backAway(int distance)
         walkingCounter = 0;
 }
 
+
+void Player::update() {
+    sprite.setPosition(rect.getPosition());
+    updateMovement();
+}
+
 void Player::updateMovement() {
 
+    // Boost
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-        movementSpeed = normalSpeed*2;
+        movementSpeed = normalSpeed*3;
     else if(movementSpeed > 1)
         movementSpeed = normalSpeed;
 
@@ -116,15 +115,4 @@ void Player::updateMovement() {
     if(walkingCounter == 2)
         walkingCounter = 0;
 
-}
-
-
-int Player::getHp() const
-{
-    return hp;
-}
-
-void Player::setHp(int value)
-{
-    hp = value;
 }

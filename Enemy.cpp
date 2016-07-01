@@ -23,53 +23,49 @@ void Enemy::update() {
 }
 
 
-void Enemy::updateMovement() {
-
-    if(direction == Direction::Right)
-    {
-        sprite.setTextureRect(sf::IntRect(walkingCounter*32, 64, 32, 32));
-        rect.move(movementSpeed, 0);
-    }
-
-    if(direction == Direction::Left)
-    {
-        sprite.setTextureRect(sf::IntRect(walkingCounter*32, 32, 32, 32));
-        rect.move(-movementSpeed, 0);
-    }
-
-    if(direction == Direction::Up)
-    {
-        sprite.setTextureRect(sf::IntRect(walkingCounter*32, 96, 32, 32));
-        rect.move(0, -movementSpeed);
-    }
-
-    if(direction == Direction::Down)
-    {
-        sprite.setTextureRect(sf::IntRect(walkingCounter*32, 0, 32, 32));
-        rect.move(0, movementSpeed);
-    }
-
-    walkingCounter++;
-    if(walkingCounter == 2)
-        walkingCounter = 0;
-
-
+void Enemy::updateMovement(){
     // simple ai
     if(counter++ >= movementLength)
     {
         switch (generateRandom(10))
         {
-            case 1: direction = Direction::Right;
+            case 1: directionVector = sf::Vector2f(1, 0);
                 break;
-            case 2: direction = Direction::Left;
+            case 2: directionVector = sf::Vector2f(-1, 0);
                 break;
-            case 3: direction = Direction::Up;
+            case 3: directionVector = sf::Vector2f(0, -1);
                 break;
-            case 4: direction = Direction::Down;
+            case 4: directionVector = sf::Vector2f(0, 1);
                 break;
-            default: direction = Direction::None; // 60% of time will have no direction
+            default: directionVector = sf::Vector2f(0,0); // 60% of time will have no direction
         }
         counter = 0;
     }
 
+    if(directionVector.y < 0) // Up
+    {
+        sprite.setTextureRect(sf::IntRect(walkingCounter*32, 96, 32, 32));
+    }
+    else if(directionVector.y > 0) // Down
+    {
+        sprite.setTextureRect(sf::IntRect(walkingCounter*32, 0, 32, 32));
+    }
+    else if(directionVector.x < 0) // Left
+    {
+        sprite.setTextureRect(sf::IntRect(walkingCounter*32, 32, 32, 32));
+    }
+    else if(directionVector.x > 0) // Right
+    {
+        sprite.setTextureRect(sf::IntRect(walkingCounter*32, 64, 32, 32));
+    }
+    else{
+        sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
+    }
+
+    rect.move(directionVector * movementSpeed);
+//
+//    walkingCounter++;
+//    if(walkingCounter == 2)
+//        walkingCounter = 0;
+    changeWalkingSprite();
 }

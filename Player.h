@@ -20,7 +20,6 @@ public:
     Player();
     void update();
     void updateMovement(); // update Player if some Key from [Up, Down, Right, Left] is pressed
-    void backAway(int);
     textDisplay takeDamage(textDisplay&, int); // returns damage message with Player position
     Projectile fire(); // returns new projectile
     Projectile getProjectile() const;

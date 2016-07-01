@@ -12,7 +12,7 @@ class Projectile : public entity
 {
 private:
     int attackDamage = 1;
-    int movementSpeed = 10;
+    float movementSpeed = 10;
     int counterLifeTime = 0 , lifeTime = 200;
     float rechargeSpeed = 70;
     std::string name = "Shotgun";

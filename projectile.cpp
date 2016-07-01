@@ -12,15 +12,7 @@ Projectile::Projectile() {
 
 void Projectile::update() {
 
-    if(direction == Direction::Left)
-        rect.move(-movementSpeed,0);
-    if(direction == Direction::Right)
-        rect.move(movementSpeed,0);
-    if(direction == Direction::Up)
-        rect.move(0, -movementSpeed);
-    if(direction == Direction::Down)
-        rect.move(0,movementSpeed);
-
+    rect.move(directionVector*movementSpeed);
     counterLifeTime++;
     if(counterLifeTime >= lifeTime)
         destroy = true;

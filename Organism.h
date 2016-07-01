@@ -13,10 +13,14 @@ protected:
     int hp = 2,
         walkingCounter = 0,
         attackDamage = 0;
+
+    int changeSpritePerFrames = 3; // change walking sprite every {changeSpriteFrames}
+    int changeSpriteCounter = 0;
     float movementSpeed = 2;
 public:
     bool destroy = false;
     virtual textDisplay takeDamage(textDisplay& msg, int damage, sf::Vector2f rectPosition);
+    void changeWalkingSprite(); // changes sprite per changeSpritePerFrames
 
     int getHp() const;
     void setHp(int);

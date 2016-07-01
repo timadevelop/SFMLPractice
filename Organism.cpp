@@ -39,3 +39,15 @@ float Organism::getMovementSpeed() const
 {
     return movementSpeed;
 }
+void Organism::changeWalkingSprite() {
+
+    if (changeSpriteCounter++ == 0) {
+        walkingCounter++;
+    }
+    if (changeSpriteCounter == changeSpritePerFrames) {
+        changeSpriteCounter = 0;
+    }
+
+    if (walkingCounter == 2)
+        walkingCounter = 0;
+}

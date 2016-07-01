@@ -7,16 +7,14 @@
 
 #include "SFML/Graphics.hpp"
 
-enum class Direction{ None, Up, Down, Left, Right };
-
 class entity {
 public:
-    Direction direction = Direction::None;
+    sf::Vector2f directionVector;
     sf::RectangleShape rect;
     sf::Sprite sprite;
     sf::Text text;
     bool intersects(const entity &e) const;
-    virtual void backAway(int);
+    virtual void backAway(float);
 };
 
 #endif //GAME_ENTITY_H

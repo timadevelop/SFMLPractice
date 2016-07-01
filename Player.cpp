@@ -26,7 +26,7 @@ Projectile Player::fire() {
             rect.getPosition().y + rect.getSize().y / 2 - projectile.rect.getSize().y / 2);
     projectile.rect.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
 
-    projectile.direction = direction;
+    projectile.directionVector = directionVector;
     return projectile;
 }
 
@@ -37,38 +37,9 @@ textDisplay Player::takeDamage(textDisplay& msg, int damage) {
     msg.text.setPosition(rect.getPosition());
     msg.text.setColor(sf::Color::Red);
 
-    backAway(damage*10); // distance
+    backAway(movementSpeed*5); // distance
     return msg;
 }
-
-// need to fix bug if in updatemovement dont use else
-void Player::backAway(int distance)
-{
-    // changing direction
-    if(direction == Direction::Right)
-        direction = Direction::Left;
-    else if(direction == Direction::Left)
-        direction = Direction::Right;
-    else if(direction == Direction::Up)
-        direction = Direction::Down;
-    else if(direction == Direction::Down)
-        direction = Direction::Up;
-
-    if(direction == Direction::Right)
-        rect.move(distance, 0);
-    else if(direction == Direction::Left)
-        rect.move(-distance, 0);
-    else if(direction == Direction::Up)
-        rect.move(0, -distance);
-    else if(direction == Direction::Down)
-        rect.move(0, distance);
-
-
-    walkingCounter++;
-    if(walkingCounter == 2)
-        walkingCounter = 0;
-}
-
 
 void Player::update() {
     sprite.setPosition(rect.getPosition());
@@ -86,33 +57,41 @@ void Player::updateMovement() {
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
         sprite.setTextureRect(sf::IntRect(walkingCounter*32, 96, 32, 32));
-        rect.move(0, -movementSpeed);
-        direction = Direction::Up;
-    }
 
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-    {
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+            directionVector = sf::Vector2f(-1, -1);
+        }
+        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+            directionVector = sf::Vector2f(1, -1);
+        }
+        else{
+            directionVector = sf::Vector2f(0, -1);
+        }
+        rect.move(directionVector*movementSpeed);
+    }
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
         sprite.setTextureRect(sf::IntRect(walkingCounter*32, 0, 32, 32));
-        rect.move(0, movementSpeed);
-        direction = Direction::Down;
-    }
 
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-    {
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+            directionVector = sf::Vector2f(-1, 1);
+        }
+        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+            directionVector = sf::Vector2f(1, 1);
+        }
+        else{
+            directionVector = sf::Vector2f(0, 1);
+        }
+        rect.move(directionVector*movementSpeed);
+    }
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
         sprite.setTextureRect(sf::IntRect(walkingCounter*32, 32, 32, 32));
-        rect.move(-movementSpeed, 0);
-        direction = Direction::Left;
+        directionVector = sf::Vector2f(-1, 0);
+        rect.move(directionVector*movementSpeed);
     }
-
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-    {
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
         sprite.setTextureRect(sf::IntRect(walkingCounter*32, 64, 32, 32));
-        rect.move(movementSpeed, 0);
-        direction = Direction::Right;
+        directionVector = sf::Vector2f(1, 0);
+        rect.move(directionVector*movementSpeed);
     }
-
-    walkingCounter++;
-    if(walkingCounter == 2)
-        walkingCounter = 0;
-
+    changeWalkingSprite();
 }

@@ -34,6 +34,11 @@ int main()
     sf::RenderWindow window(sf::VideoMode(X_MAX, Y_MAX), "SFML Application");
     window.setFramerateLimit(60);
 
+    // View
+    sf::View view;
+    view.setSize(window.getSize().x, window.getSize().y);
+    view.setCenter(sf::Vector2f(view.getCenter().x, view.getCenter().y)); // default center
+
     // Background
     sf::Texture texture;
     if (!texture.loadFromFile("src/back.jpg"))
@@ -77,9 +82,9 @@ int main()
     // ****************************
 
 
-    vector<Wall>::const_iterator roomIterator;
+    vector<Wall>::const_iterator wallIterator;
     vector<Wall> room;
-    // Window borders
+    // Map borders
     Wall wall(window.getSize().x, 50); // upper
     room.push_back(wall);
     wall.rect.setPosition(0, window.getSize().y);
@@ -88,6 +93,7 @@ int main()
     room.push_back(wall);
     wall.rect.setPosition(window.getSize().x, 0);
     room.push_back(wall);
+    wall.rect.setFillColor(sf::Color::White);
 
     Player Player1;
     Player1.sprite.setTexture(heroTexture);
@@ -97,6 +103,7 @@ int main()
     vector<Enemy> enemies;
     Enemy enemy;
     enemy.sprite.setTexture(enemyTexture);
+    enemy.rect.setPosition(Player1.rect.getPosition().x + 50, Player1.rect.getPosition().y+50);
     enemies.push_back(enemy);
 
     // Projectile Vector Array
@@ -134,8 +141,9 @@ int main()
         if(elapsedFireClock.asSeconds() >= 10/Player1.getProjectile().getRechargeSpeed()) { // for @small@ projectiles
             fireclock.restart();
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-                if (Player1.direction != Direction::None)
+                if (Player1.directionVector != sf::Vector2f(0, 0)){
                     projectiles.push_back(Player1.fire());
+                }
             }
         }
 
@@ -147,7 +155,7 @@ int main()
         // Entity Collides with wall
 
         counter = 0;
-        for (roomIterator = room.begin(); roomIterator != room.end(); roomIterator++, counter++) {
+        for (wallIterator = room.begin(); wallIterator != room.end(); wallIterator++, counter++) {
             if(Player1.intersects(room[counter]))
             {
                 Player1.backAway(Player1.getMovementSpeed());
@@ -155,7 +163,10 @@ int main()
             counter2 = 0;
             for (iterEnemies = enemies.begin(); iterEnemies != enemies.end(); iterEnemies++, counter2++) {
                 if (room[counter].intersects(enemies[counter2])) {
-                    enemies[counter2].backAway(enemies[counter2].getMovementSpeed()+1);
+                    enemies[counter2].backAway(enemies[counter2].getMovementSpeed());
+                    // if enemy is still intersects then it`s "in" wall
+                    //if(room[counter].intersects(enemies[counter2]))
+                        //enemies[counter2].destroy = true;
                 }
             }
         }
@@ -169,7 +180,9 @@ int main()
                 if (projectiles[counter].intersects(enemies[counter2])) {
                     enemies[counter2].takeDamage(msg, projectiles[counter].getAttackDamage(), enemies[counter2].rect.getPosition());
                     projectiles[counter].destroy = true;
-                    msgs.push_back(msg);
+                    if(enemies[counter2].destroy)
+                        addHint(hints, hint, "Player destroyed enemy", X_MAX);
+                    msgs.push_back(msg); // damage msg
                 }
             }
         }
@@ -197,10 +210,8 @@ int main()
         }
         destroyEntities<Projectile>(projectiles);
         destroyEntities<textDisplay>(msgs);
-        if( destroyEntities<Enemy>(enemies) )
-        {
-            addHint(hints, hint, "Player destroyed enemy", X_MAX);
-        }
+        destroyEntities<Enemy>(enemies);
+
         // ****************************
         //          Hotkeys
         // ****************************
@@ -215,22 +226,20 @@ int main()
         {
             wall.rect.setSize(sf::Vector2f(10,10));
             wall.rect.setPosition(Player1.rect.getPosition().x-10, Player1.rect.getPosition().y-10);
+            wall.rect.setFillColor(sf::Color::White);
             room.push_back(wall);
         }
 
         // ****************************
         //          Drawing
         // ****************************
+        window.draw(background);
 
-        //window.draw(background);
-        window.draw(wall.rect);
-
-        // Drawing walls
+        // Drow Player walls
         counter = 0;
-        for (roomIterator = room.begin(); roomIterator != room.end(); roomIterator++, counter++) {
+        for (wallIterator = room.begin(); wallIterator != room.end(); wallIterator++, counter++) {
             window.draw(room[counter].rect);
         }
-
         // Drawing projectiles
         counter = 0;
         for (iter = projectiles.begin(); iter != projectiles.end(); iter++, counter++) {
@@ -252,10 +261,17 @@ int main()
             window.draw(msgs[counter].text);
             counter++;
         }
-
         Player1.update();
         window.draw(Player1.sprite);
+
+        // *************************
         // Update & draw information
+        // drawing walls with
+        // standart view
+        // *************************
+
+        // setting view for drawing main info
+        window.setView(window.getDefaultView());
 
         gameInfo.setString("Hero HP: " + to_string(Player1.getHp()) + " | Enemies: " + to_string(enemies.size()) + " | Weapon: " + Player1.getProjectile().getName());
         window.draw(gameInfo);
@@ -268,6 +284,8 @@ int main()
             counter++;
         }
 
+        view.setCenter(Player1.rect.getPosition());
+        window.setView(view);
         window.display();
     }
 }

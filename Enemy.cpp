@@ -63,9 +63,5 @@ void Enemy::updateMovement(){
     }
 
     rect.move(directionVector * movementSpeed);
-//
-//    walkingCounter++;
-//    if(walkingCounter == 2)
-//        walkingCounter = 0;
     changeWalkingSprite();
 }

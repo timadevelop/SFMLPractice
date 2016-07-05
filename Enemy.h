@@ -7,7 +7,7 @@
 
 
 #include "entity.h"
-#include "randoms.h"
+#include "helpers/randoms.h"
 #include "textDisplay.h"
 #include "Organism.h"
 
@@ -20,7 +20,7 @@ public:
     Enemy();
     void update();
 
-    // sets random directiom and moves enemy
+    // sets random direction and moves enemy
     void updateMovement();
 };
 

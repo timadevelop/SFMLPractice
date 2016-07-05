@@ -23,6 +23,8 @@ public:
     textDisplay takeDamage(textDisplay&, int); // returns damage message with Player position
     Projectile fire(); // returns new projectile
     Projectile getProjectile() const;
+
+    unsigned int destroyedEnemies = 0;
 };
 
 

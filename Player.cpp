@@ -11,7 +11,7 @@ Player::Player()
     movementSpeed = 2;
     attackDamage = 5;
     rect.setSize(sf::Vector2f(32,32));
-    rect.setPosition(300, 200);
+    rect.setPosition(32,32);
     rect.setFillColor(sf::Color::White);
     sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
 }

@@ -18,7 +18,7 @@ private:
     int counter = 0;
     std::string str = "Default";
     float movementSpeed = 1;
-    sf::Vector2f moveVector = sf::Vector2f(-0.3 ,-movementSpeed);
+    sf::Vector2f moveVector = sf::Vector2f((float) -0.3, -movementSpeed);
 public:
     bool destroy = false;
     textDisplay();

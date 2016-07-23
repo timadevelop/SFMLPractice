@@ -3,7 +3,7 @@
 //
 
 #include "GameScene.h"
-#include "helpers/randoms.h"
+#include "../helpers/randoms.h"
 
 int GameScene:: getResult()
 {
@@ -12,7 +12,7 @@ int GameScene:: getResult()
 
 GameScene::GameScene(sf::RenderWindow &window) {
     // View
-    view.setSize(window.getSize().x, window.getSize().y);
+    view.setSize(window.getSize().x/2, window.getSize().y/2);
     view.setCenter(player.rect.getPosition()); // default center
     window.setView(view);
     // Background
@@ -29,10 +29,6 @@ GameScene::GameScene(sf::RenderWindow &window) {
     sf::Text gameInfo("Welcome", font, 30);
     gameInfo.setColor(sf::Color::White);
 
-    // Textures
-    if(!heroTexture.loadFromFile("src/mario.png"))
-        std::cerr << "This .png file for texture is not found";
-
     if(!enemyTexture.loadFromFile("src/enemy.png"))
         std::cerr << "This .png file for texture is not found";
 
@@ -43,7 +39,8 @@ GameScene::GameScene(sf::RenderWindow &window) {
     hint.text.setFont(font);
     hint.text.setCharacterSize(15);
     addHint(hints, hint, "LShift - boost", window.getSize().x);
-    addHint(hints, hint, "W - wall painting mode", window.getSize().x);
+    addHint(hints, hint, "Left mouse - fire", window.getSize().x);
+    addHint(hints, hint, "Right mouse / arrows - walking", window.getSize().x);
 
     // ****************************
     //          Entities
@@ -60,19 +57,21 @@ GameScene::GameScene(sf::RenderWindow &window) {
     room.push_back(wall);
     wall.rect.setFillColor(sf::Color::White);
     // Player
-    player.sprite.setTexture(heroTexture);
+
+    player.mainCircle.setPosition(window.getSize().x/2, window.getSize().y/2);
     player.rect.setPosition(window.getSize().x/2, window.getSize().y/2);
     // Enemies
     enemy.sprite.setTexture(enemyTexture);
-    enemy.rect.setPosition(player.rect.getPosition().x + 50, player.rect.getPosition().y + 50);
-    enemies.push_back(enemy);
-
+    for (int i = 0; i <= 40; ++i) {
+        enemy.rect.setPosition(generateRandom(window.getSize().x - 100), generateRandom(window.getSize().y - 100));
+        enemies.push_back(enemy);
+    }
     msg.text.setFont(font);
+    msg.text.setCharacterSize(13);
 }
 
 
 int GameScene::Run(sf::RenderWindow &window) {
-
 
     window.setTitle("Game");
     window.setView(view);
@@ -101,13 +100,34 @@ int GameScene::Run(sf::RenderWindow &window) {
 
         if (elapsedFireClock.asSeconds() >= 10 / player.getProjectile().getRechargeSpeed()) { // for @small@ projectiles
             fireclock.restart();
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-                if (player.directionVector != sf::Vector2f(0, 0)) {
-                    projectiles.push_back(player.fire());
-                }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) &&
+                player.directionVector != sf::Vector2f(0, 0) )
+            {
+                projectiles.push_back(player.fire());
+            } else if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            {
+                sf::Vector2i localPosition = sf::Mouse::getPosition(window);
+                sf::Vector2f worldPosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                sf::RectangleShape target;
+                target.setPosition(worldPosition);
+                target.setSize(sf::Vector2f(10,10));
+                target.setFillColor(sf::Color::White);
+                projectiles.push_back(player.fire(target));
             }
         }
 
+        // motion
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Right) &&
+            !player.rect.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window))))
+        {
+            sf::Vector2i localPosition = sf::Mouse::getPosition(window);
+            sf::Vector2f worldPosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+            sf::RectangleShape target;
+            target.setPosition(worldPosition);
+            target.setSize(sf::Vector2f(10,10));
+            target.setFillColor(sf::Color::White);
+            player.setTarget(target);
+        }
 
         // ****************************
         //          Collisions
@@ -117,6 +137,8 @@ int GameScene::Run(sf::RenderWindow &window) {
 
         counter = 0;
         for (wallIterator = room.begin(); wallIterator != room.end(); wallIterator++, counter++) {
+            if(!room[counter].isBarrier)
+                continue;
             if (player.intersects(room[counter])) {
                 player.backAway(player.getMovementSpeed());
             }
@@ -175,16 +197,9 @@ int GameScene::Run(sf::RenderWindow &window) {
         //          Hotkeys
         // ****************************
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && enemies.size() < 20) {
-            enemy.rect.setPosition(generateRandom(window.getSize().x), generateRandom(window.getSize().y));
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && enemies.size() < 70) {
+            enemy.rect.setPosition(generateRandom(window.getSize().x - 100), generateRandom(window.getSize().y - 100));
             enemies.push_back(enemy);
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-            wall.rect.setSize(sf::Vector2f(10, 10));
-            wall.rect.setPosition(player.rect.getPosition().x - 10, player.rect.getPosition().y - 10);
-            wall.rect.setFillColor(sf::Color::White);
-            room.push_back(wall);
         }
 
         // ****************************
@@ -219,7 +234,9 @@ int GameScene::Run(sf::RenderWindow &window) {
             counter++;
         }
         player.update();
-        window.draw(player.sprite);
+
+        // drawing player
+        player.draw(&window);
 
         // *************************
         // Update & draw information

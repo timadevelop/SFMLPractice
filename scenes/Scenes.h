@@ -6,10 +6,10 @@
 #ifndef GAME_SCREENS_H
 #define GAME_SCREENS_H
 
-#include "scenes/Scene.h"
+#include "Scene.h"
 
-#include "scenes/MenuScene.h"
-#include "scenes/GameScene.h"
-#include "scenes/TheEndScene.h"
+#include "MenuScene.h"
+#include "GameScene.h"
+#include "TheEndScene.h"
 
 #endif //GAME_SCREENS_H

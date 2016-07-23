@@ -13,6 +13,9 @@ class Wall : public entity
 private:
     float width = 50, height = 50;
 public:
+    sf::CircleShape circle;
+    sf::Transform transform;
+    bool isBarrier = true;
     Wall();
     Wall(float, float);
 };

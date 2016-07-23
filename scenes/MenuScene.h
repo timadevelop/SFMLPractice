@@ -5,7 +5,7 @@
 #ifndef GAME_SCREEN_0_H
 #define GAME_SCREEN_0_H
 #include <iostream>
-#include "scenes/Scene.h"
+#include "Scene.h"
 #include <SFML/Graphics.hpp>
 
 class MenuScene : public Scene

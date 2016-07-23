@@ -13,14 +13,14 @@
       <sourceFolder url="file://$MODULE_DIR$/helpers/randoms.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/helpers/randoms.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Enemy.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/scenes/TheEndScene.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/scenes/MenuScene.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/scenes/TheEndScene.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/scenes/GameScene.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/scenes/Scene.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/scenes/Scene.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/scenes/Scenes.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/scenes/MenuScene.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/scenes/MenuScene.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/scenes/TheEndScene.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/scenes/Scenes.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/scenes/GameScene.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />

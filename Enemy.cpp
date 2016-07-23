@@ -11,9 +11,11 @@ Enemy::Enemy()
     attackDamage = 2;
     movementSpeed = .5;
     rect.setSize(sf::Vector2f(32,32));
-    rect.setPosition(0, 33);
+    rect.setPosition(0, 17);
     rect.setFillColor(sf::Color::White);
     sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
+    sprite.setScale(0.7, 0.7);
+    rect.setScale(0.7, 0.7);
 }
 
 

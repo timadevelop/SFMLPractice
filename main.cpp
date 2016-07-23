@@ -14,7 +14,7 @@ int main()
     sf::RenderWindow App(sf::VideoMode(2560, 1080), "Game",sf::Style::Fullscreen);
     App.setFramerateLimit(60);
     //Mouse cursor no more visible
-    App.setMouseCursorVisible(false);
+    //App.setMouseCursorVisible(false);
 
     //Screens preparations
     MenuScene* menuScene = new MenuScene;

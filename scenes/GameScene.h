@@ -8,11 +8,11 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "scenes/Scene.h"
-#include "textDisplay.h"
-#include "Wall.h"
-#include "Player.h"
-#include "Enemy.h"
+#include "Scene.h"
+#include "../textDisplay.h"
+#include "../Wall.h"
+#include "../Player.h"
+#include "../Enemy.h"
 
 using namespace std;
 
@@ -36,9 +36,7 @@ private:
     sf::Font font;
     sf::Text gameInfo = sf::Text("Welcome", font, 30);
 
-    sf::Texture heroTexture ;
     sf::Texture enemyTexture;
-
 
     textDisplay hint; // hint proto
     vector<textDisplay> hints;
@@ -61,8 +59,6 @@ private:
     vector<textDisplay> msgs;
 
     Player player;
-
-
     // deletes enemies with destroy == true from enemies vector
     template <class entityType>
     bool destroyEntities(vector<entityType>& entities);

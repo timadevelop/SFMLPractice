@@ -30,16 +30,15 @@ int MenuScene::Run(sf::RenderWindow &App)
     // ***********************
     //          Background
     // ***********************
-    sf::VertexArray background(sf::Quads, 4);
-    background[0].position = sf::Vector2f(0,0);
-    background[1].position = sf::Vector2f(App.getSize().x,0);
-    background[2].position = sf::Vector2f(App.getSize().x,App.getSize().y);
-    background[3].position = sf::Vector2f(0,App.getSize().y);
 
-    background[0].color = sf::Color( 214, 162, 151 );
-    background[1].color = sf::Color( 193, 151, 214 );
-    background[2].color = sf::Color( 171, 214, 151 );
-    background[3].color = sf::Color( 151, 214, 208 );
+    sf::Texture texture;
+    sf::Sprite background;
+    // Background
+    if (!texture.loadFromFile("src/back.jpg"))
+        std::cerr << "This .jpg file is not found";
+    texture.setRepeated(true);
+    background.setTexture(texture);
+    background.setTextureRect(sf::IntRect(0,0, App.getSize().x, App.getSize().y));
 
     // ***********************
     //          Menu elements

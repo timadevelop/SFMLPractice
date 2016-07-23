@@ -1,0 +1,3 @@
+/home/vtimofeev/projects/SFMLPractice/build/CMakeFiles/rebuild_cache.dir
+/home/vtimofeev/projects/SFMLPractice/build/CMakeFiles/edit_cache.dir
+/home/vtimofeev/projects/SFMLPractice/build/CMakeFiles/Game.dir

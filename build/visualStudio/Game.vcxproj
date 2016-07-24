@@ -116,7 +116,7 @@
     <ClCompile Include="..\..\scenes\Scenes.cpp" />
     <ClCompile Include="..\..\scenes\TheEndScene.cpp" />
     <ClCompile Include="..\..\textDisplay.cpp" />
-    <ClCompile Include="..\..\Wall.cpp" />
+    <ClCompile Include="..\..\Block.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Enemy.h" />
@@ -131,7 +131,7 @@
     <ClInclude Include="..\..\scenes\Scenes.h" />
     <ClInclude Include="..\..\scenes\TheEndScene.h" />
     <ClInclude Include="..\..\textDisplay.h" />
-    <ClInclude Include="..\..\Wall.h" />
+    <ClInclude Include="..\..\Block.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\cmakefiles\3.5.1\CMakeDetermineCompilerABI_C.bin" />

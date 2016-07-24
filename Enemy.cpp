@@ -9,7 +9,7 @@ Enemy::Enemy()
 {
     hp = 2;
     attackDamage = 2;
-    movementSpeed = .5;
+    movementSpeed = 1;
     rect.setSize(sf::Vector2f(32,32));
     rect.setPosition(0, 17);
     rect.setFillColor(sf::Color::White);

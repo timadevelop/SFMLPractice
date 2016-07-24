@@ -167,7 +167,7 @@ void Player::draw(sf::RenderWindow* window){
         track.erase(track.begin());
     }
     // drawing track
-    for(std::vector<Wall>::iterator it = track.begin(); it != track.end(); it++){
+    for(std::vector<Block>::iterator it = track.begin(); it != track.end(); it++){
         window->draw(it->circle, it->transform);
     }
     // drawing player
@@ -180,27 +180,30 @@ void Player::draw(sf::RenderWindow* window){
     if( sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
         sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || target.getPosition() != sf::Vector2f(0,0))
     {
-        Wall wall;
-        wall.transform = transform;
-        wall.isBarrier = false;
-        wall.circle.setRadius(secondCircle.getRadius());
-        wall.circle.setPosition(secondCircle.getPosition());
-        wall.circle.setFillColor(sf::Color(
+        Block block;
+        block.transform = transform;
+        block.isBarrier = false;
+        block.circle.setRadius(secondCircle.getRadius());
+        block.circle.setPosition(secondCircle.getPosition());
+        block.circle.setFillColor(sf::Color(
                 secondCircle.getFillColor().r,secondCircle.getFillColor().b,secondCircle.getFillColor().g,secondCircle.getFillColor().a - 70
         ));
-        track.push_back(wall);
-        wall.circle.setRadius(thirdCircle.getRadius());
-        wall.circle.setPosition(thirdCircle.getPosition());
-        wall.circle.setFillColor(sf::Color(
+        track.push_back(block);
+        block.circle.setRadius(thirdCircle.getRadius());
+        block.circle.setPosition(thirdCircle.getPosition());
+        block.circle.setFillColor(sf::Color(
                 thirdCircle.getFillColor().r,thirdCircle.getFillColor().b,thirdCircle.getFillColor().g,thirdCircle.getFillColor().a - 70
         ));
-        track.push_back(wall);
+        track.push_back(block);
     }else if(track.size() >= 2)
     {   track.erase(track.begin());
         track.erase(track.begin());
     }
 }
 
+void Player::setProjectile(Projectile pr) {
+	projectile = pr;
+}
 
 Player::~Player()
 { }

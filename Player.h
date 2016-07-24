@@ -9,14 +9,14 @@
 #include "projectile.h"
 #include "textDisplay.h"
 #include "Organism.h"
-#include "Wall.h"
+#include "Block.h"
 
 
 class Player : public entity, public Organism
 {
 private:
     Projectile projectile;
-    std::vector<Wall> track;
+    std::vector<Block> track;
     float normalSpeed = 2;
     int rotationFactor = 0, rotationAngle = 5;
 public:
@@ -31,6 +31,7 @@ public:
     Projectile fire(); // returns new projectile
     Projectile fire(sf::RectangleShape);
     Projectile getProjectile() const;
+	void setProjectile(Projectile);
     unsigned int destroyedEnemies = 0;
     void setTarget(sf::RectangleShape);
     void draw(sf::RenderWindow* window);

@@ -22,6 +22,7 @@ public:
     bool destroy = false;
     int getAttackDamage() const;
     void setAttackDamage(int);
+	void setRechargeSpeed(float seconds);
     float getRechargeSpeed() const;
     std::string getName() const;
     void setName(std::string);

@@ -22,6 +22,11 @@ int Organism::getHp() const
     return hp;
 }
 
+void Organism::setMovementSpeed(float speed)
+{
+	movementSpeed = speed;
+}
+
 void Organism::setHp(int value)
 {
     hp = value;

@@ -30,6 +30,11 @@ float Projectile::getRechargeSpeed() const {
     return rechargeSpeed;
 }
 
+void Projectile::setRechargeSpeed(float seconds)
+{
+	rechargeSpeed = seconds;
+}
+
 std::string Projectile::getName() const {
     return name;
 }

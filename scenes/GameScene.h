@@ -10,7 +10,7 @@
 #include <iostream>
 #include "Scene.h"
 #include "../textDisplay.h"
-#include "../Wall.h"
+#include "../Block.h"
 #include "../Player.h"
 #include "../Enemy.h"
 
@@ -42,9 +42,9 @@ private:
     vector<textDisplay> hints;
     vector<textDisplay>::const_iterator hintIter;
 
-    Wall wall; // wall proto
-    vector<Wall> room;
-    vector<Wall>::const_iterator wallIterator;
+    Block block; // block proto
+    vector<Block> room;
+    vector<Block>::const_iterator blockIterator;
 
     Enemy enemy;
     vector<Enemy> enemies;

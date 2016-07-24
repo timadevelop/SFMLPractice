@@ -26,6 +26,7 @@ public:
     void setHp(int);
     int getAttackDamage() const;
     void setAttackDamage(int);
+	void setMovementSpeed(float);
     float getMovementSpeed() const;
 };
 

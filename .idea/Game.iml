@@ -3,49 +3,47 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/entity.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Enemy.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Wall.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Organism.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/textDisplay.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/projectile.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/projectile.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Block.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Organism.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Enemy.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/helpers/randoms.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/helpers/randoms.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Enemy.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/scenes/MenuScene.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/scenes/TheEndScene.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/scenes/GameScene.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/scenes/Scene.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Block.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/scenes/Scene.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/scenes/Scenes.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/scenes/MenuScene.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/scenes/MenuScene.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/scenes/GameScene.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/scenes/TheEndScene.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/scenes/Scenes.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/scenes/GameScene.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Wall.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Player.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/cmake_modules/FindSFML.cmake" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/textDisplay.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/entity.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/scenes/Scene.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/scenes/TheEndScene.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/scenes/GameScene.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/scenes/MenuScene.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/scenes/Scenes.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/projectile.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/projectile.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Player.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/textDisplay.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Enemy.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/entity.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Player.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Organism.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cmake_modules/FindSFML.cmake" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
       <library name="Header Search Paths">
         <CLASSES>
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
-          <root url="file:///usr/include" />
-          <root url="file:///usr/local/include" />
+          <root url="file://C:/MinGW/lib/gcc/mingw32/4.9.3/include" />
+          <root url="file://C:/MinGW/lib/gcc/mingw32/4.9.3/include-fixed" />
+          <root url="file://C:/MinGW/include" />
         </CLASSES>
         <SOURCES>
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
-          <root url="file:///usr/include" />
-          <root url="file:///usr/local/include" />
+          <root url="file://C:/MinGW/lib/gcc/mingw32/4.9.3/include" />
+          <root url="file://C:/MinGW/lib/gcc/mingw32/4.9.3/include-fixed" />
+          <root url="file://C:/MinGW/include" />
         </SOURCES>
       </library>
     </orderEntry>

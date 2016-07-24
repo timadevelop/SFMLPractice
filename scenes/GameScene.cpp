@@ -7,7 +7,7 @@
 
 int GameScene:: getResult()
 {
-    return player.destroyedEnemies + player.getHp();
+    return player.destroyedEnemies*enemy.getHp()*player.getHp();
 }
 
 GameScene::GameScene(sf::RenderWindow &window) {
@@ -47,22 +47,22 @@ GameScene::GameScene(sf::RenderWindow &window) {
     // ****************************
 
     // Map borders
-    wall = Wall(window.getSize().x, 50); // upper
-    room.push_back(wall);
-    wall.rect.setPosition(0, window.getSize().y);
-    room.push_back(wall);
-    wall = Wall(50, window.getSize().y);
-    room.push_back(wall);
-    wall.rect.setPosition(window.getSize().x, 0);
-    room.push_back(wall);
-    wall.rect.setFillColor(sf::Color::White);
+    block = Block(window.getSize().x, 50); // upper
+    room.push_back(block);
+    block.rect.setPosition(0, window.getSize().y);
+    room.push_back(block);
+    block = Block(50, window.getSize().y);
+    room.push_back(block);
+    block.rect.setPosition(window.getSize().x, 0);
+    room.push_back(block);
+    block.rect.setFillColor(sf::Color::White);
     // Player
 
     player.mainCircle.setPosition(window.getSize().x/2, window.getSize().y/2);
     player.rect.setPosition(window.getSize().x/2, window.getSize().y/2);
     // Enemies
     enemy.sprite.setTexture(enemyTexture);
-    for (int i = 0; i <= 40; ++i) {
+	for (int i = 0; i <= 10; ++i) {
         enemy.rect.setPosition(generateRandom(window.getSize().x - 100), generateRandom(window.getSize().y - 100));
         enemies.push_back(enemy);
     }
@@ -75,7 +75,9 @@ int GameScene::Run(sf::RenderWindow &window) {
 
     window.setTitle("Game");
     window.setView(view);
-    while (window.isOpen()) {
+
+	bool boss = false;
+	while (window.isOpen()) {
         sf::Event event;
 
         while (window.pollEvent(event)) {
@@ -133,10 +135,10 @@ int GameScene::Run(sf::RenderWindow &window) {
         //          Collisions
         // ****************************
 
-        // Entity Collides with wall
+        // Entity Collides with block
 
         counter = 0;
-        for (wallIterator = room.begin(); wallIterator != room.end(); wallIterator++, counter++) {
+        for (blockIterator = room.begin(); blockIterator != room.end(); blockIterator++, counter++) {
             if(!room[counter].isBarrier)
                 continue;
             if (player.intersects(room[counter])) {
@@ -180,12 +182,31 @@ int GameScene::Run(sf::RenderWindow &window) {
         //          Destroying
         // ****************************
 
-        // Destroy player
+        // The end
         if (player.getHp() <= 0 && player.rect.getScale() != sf::Vector2f(0, 0))
             break; // the end of game
 
-        if(enemies.size() == 0)
-            break;
+		if (enemies.size() == 0)
+		{
+			if (boss)
+				break;
+			Enemy chicken = enemy;
+			chicken.setHp(40);
+			chicken.setMovementSpeed(chicken.getMovementSpeed() * 2);
+			chicken.sprite.setScale(1.5, 1.5);
+			chicken.rect.setScale(1.5, 1.5);
+			chicken.setAttackDamage(3);
+			chicken.rect.setPosition(generateRandom(window.getSize().x - 100), generateRandom(window.getSize().y - 100));
+			enemies.push_back(chicken);
+			Projectile pr;
+			pr.setAttackDamage(2);
+			pr.setRechargeSpeed(pr.getRechargeSpeed() * 2);
+			pr.setName("QuickFire");
+			player.setProjectile(pr);
+			boss = true;
+			addHint(hints, hint, "Find main CHICKEN!", window.getSize().x);
+		}
+
         destroyEntities<Projectile>(projectiles);
 
         if(destroyEntities<Enemy>(enemies))
@@ -197,7 +218,7 @@ int GameScene::Run(sf::RenderWindow &window) {
         //          Hotkeys
         // ****************************
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && enemies.size() < 70) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && enemies.size() < 70 && !boss) {
             enemy.rect.setPosition(generateRandom(window.getSize().x - 100), generateRandom(window.getSize().y - 100));
             enemies.push_back(enemy);
         }
@@ -207,9 +228,9 @@ int GameScene::Run(sf::RenderWindow &window) {
         // ****************************
         window.draw(background);
 
-        // Drawing Player walls
+        // Drawing Player blocks
         counter = 0;
-        for (wallIterator = room.begin(); wallIterator != room.end(); wallIterator++, counter++) {
+        for (blockIterator = room.begin(); blockIterator != room.end(); blockIterator++, counter++) {
             window.draw(room[counter].rect);
         }
         // Drawing projectiles
@@ -240,7 +261,7 @@ int GameScene::Run(sf::RenderWindow &window) {
 
         // *************************
         // Update & draw information
-        // drawing walls with
+        // drawing blocks with
         // standart view
         // *************************
 

@@ -5,6 +5,7 @@ using namespace std;
 
 #include "scenes/Scenes.h"
 
+
 int main()
 {
     std::vector<Scene*> screens;

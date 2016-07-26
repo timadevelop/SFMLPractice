@@ -5,11 +5,13 @@
 
 #include "Enemy.h"
 
+
+
 Enemy::Enemy()
 {
     hp = 2;
     attackDamage = 2;
-    movementSpeed = 1;
+	movementSpeed = generateRandomFloat(.5f, 1.0f);
     rect.setSize(sf::Vector2f(32,32));
     rect.setPosition(0, 17);
     rect.setFillColor(sf::Color::White);
@@ -25,9 +27,19 @@ void Enemy::update() {
 }
 
 
+void Enemy::setTarget(sf::RectangleShape r) {
+	target = r;
+	sf::Vector2f vec = r.getPosition() - rect.getPosition();
+	float length = static_cast<float>(sqrt((vec.x*vec.x) + (vec.y*vec.y)));
+	directionVector = sf::Vector2f(vec.x / length * 2, vec.y / length * 2);
+}
+
+
 void Enemy::updateMovement(){
-    // simple ai
-    if(counter++ >= movementLength)
+
+
+	// simple ai
+    if(target.getPosition() == sf::Vector2f(.0f, .0f) && counter++ >= movementLength)
     {
         switch (generateRandom(10))
         {
@@ -44,21 +56,23 @@ void Enemy::updateMovement(){
         counter = 0;
     }
 
-    if(directionVector.y < 0) // Up
+
+
+	if (directionVector.x < -.5f) // Left
+	{
+		sprite.setTextureRect(sf::IntRect(walkingCounter * 32, 32, 32, 32));
+	}
+	else if (directionVector.x > .5f) // Right
+	{
+		sprite.setTextureRect(sf::IntRect(walkingCounter * 32, 64, 32, 32));
+	}
+    else if(directionVector.y < 0) // Up
     {
         sprite.setTextureRect(sf::IntRect(walkingCounter*32, 96, 32, 32));
     }
     else if(directionVector.y > 0) // Down
     {
         sprite.setTextureRect(sf::IntRect(walkingCounter*32, 0, 32, 32));
-    }
-    else if(directionVector.x < 0) // Left
-    {
-        sprite.setTextureRect(sf::IntRect(walkingCounter*32, 32, 32, 32));
-    }
-    else if(directionVector.x > 0) // Right
-    {
-        sprite.setTextureRect(sf::IntRect(walkingCounter*32, 64, 32, 32));
     }
     else{
         sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));

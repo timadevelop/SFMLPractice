@@ -9,12 +9,11 @@
 
 class entity {
 public:
-    sf::Vector2f directionVector;
-    sf::RectangleShape rect;
-    sf::Sprite sprite;
-    sf::Text text;
-    bool intersects(const entity &e) const;
-    virtual void backAway(float);
+	sf::Vector2f directionVector;
+	sf::RectangleShape rect;
+	sf::Sprite sprite;
+	sf::Text text;
+	sf::Vector2f intersects(const entity &e);
+	virtual void backAway(float);
 };
-
 #endif //GAME_ENTITY_H

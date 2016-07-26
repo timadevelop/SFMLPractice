@@ -7,12 +7,12 @@
 
 int GameScene:: getResult()
 {
-    return player.destroyedEnemies*enemy.getHp()*player.getHp();
+    return player.destroyedEnemies*enemy.getHp()*(player.getHp() > 1 ? player.getHp() : 1);
 }
 
 GameScene::GameScene(sf::RenderWindow &window) {
     // View
-    view.setSize(window.getSize().x/2, window.getSize().y/2);
+    view.setSize(static_cast<float>(window.getSize().x/2), static_cast<float>(window.getSize().y/2));
     view.setCenter(player.rect.getPosition()); // default center
     window.setView(view);
     // Background
@@ -31,11 +31,11 @@ GameScene::GameScene(sf::RenderWindow &window) {
 
     if(!enemyTexture.loadFromFile("src/enemy.png"))
         std::cerr << "This .png file for texture is not found";
-
+	enemyTexture.setSmooth(true);
     // ****************************
     //          Hints
     // ****************************
-    hint.setMoveVector(sf::Vector2f(0, -1));//hint.text.getCharacterSize()));
+    hint.setMoveVector(sf::Vector2f(0, -1));
     hint.text.setFont(font);
     hint.text.setCharacterSize(15);
     addHint(hints, hint, "LShift - boost", window.getSize().x);
@@ -59,11 +59,13 @@ GameScene::GameScene(sf::RenderWindow &window) {
     // Player
 
     player.mainCircle.setPosition(window.getSize().x/2, window.getSize().y/2);
+	player.setMovementSpeed(enemy.getMovementSpeed()*1.4f);
     player.rect.setPosition(window.getSize().x/2, window.getSize().y/2);
     // Enemies
     enemy.sprite.setTexture(enemyTexture);
-	for (int i = 0; i <= 10; ++i) {
-        enemy.rect.setPosition(generateRandom(window.getSize().x - 100), generateRandom(window.getSize().y - 100));
+	for (int i = 0; i <= enemiesCount; ++i) {
+		enemy.setMovementSpeed(generateRandomFloat(.5f, 1.0f));
+        enemy.rect.setPosition(static_cast<float>(generateRandom(window.getSize().x - 100)), static_cast<float>(generateRandom(window.getSize().y - 100)));
         enemies.push_back(enemy);
     }
     msg.text.setFont(font);
@@ -76,10 +78,9 @@ int GameScene::Run(sf::RenderWindow &window) {
     window.setTitle("Game");
     window.setView(view);
 
-	bool boss = false;
+	int mouseDelta = 0;
 	while (window.isOpen()) {
         sf::Event event;
-
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 return -1;
@@ -90,17 +91,63 @@ int GameScene::Run(sf::RenderWindow &window) {
             if(event.type == sf::Event::LostFocus){
                 return 0;
             }
+			if (event.type == sf::Event::MouseWheelMoved)
+			{
+				if (event.mouseWheel.delta < 0)
+					view.zoom(1.1f);
+				else if(event.mouseWheel.delta > 0)
+					view.zoom(.9f);
+			}
         }
 
         window.clear();
 
-        sf::Time elapsedFireClock = fireclock.getElapsedTime();
-        sf::Time elapsedDamageClock = damageClock.getElapsedTime();
-        sf::Time elapsed3 = clock3.getElapsedTime();
+        
+
+		// ****************************
+		//          Collisions
+		// ****************************
+
+		// Enemy and player Collides with block
+
+		for (auto blockIterator = room.begin(); blockIterator != room.end(); blockIterator++) {
+			if (!blockIterator->isBarrier)
+				continue;
+			player.rect.move(player.intersects(*blockIterator) * player.getMovementSpeed());
+			
+			for (auto iterEnemies = enemies.begin(); iterEnemies != enemies.end(); iterEnemies++)
+				iterEnemies->rect.move(iterEnemies->intersects(*blockIterator) * iterEnemies->getMovementSpeed());
+		}
+
+		// Projectile Collides with enemy
+
+		for (auto iterProjectiles = projectiles.begin(); iterProjectiles != projectiles.end(); iterProjectiles++) {
+			for (auto iterEnemies = enemies.begin(); iterEnemies != enemies.end(); iterEnemies++) {
+				if (iterProjectiles->intersects(*iterEnemies) != sf::Vector2f(.0f, .0f)) {
+					iterEnemies->takeDamage(msg, iterProjectiles->getAttackDamage(), iterEnemies->rect.getPosition());
+					iterProjectiles->destroy = true;
+					if (iterEnemies->destroy)
+						addHint(hints, hint, "Player destroyed enemy", window.getSize().x);
+					msgs.push_back(msg); // damage msg
+				}
+			}
+		}
+
+		// Enemy collides with player (player takes damage)
+		if (enemyCollisionClock.getElapsedTime().asSeconds() > 2) {
+			for (auto iterEnemies = enemies.begin(); iterEnemies != enemies.end(); iterEnemies++) {
+				sf::Vector2f v = player.intersects(*iterEnemies);
+				if (v != sf::Vector2f(.0f, .0f) || player.rect.getGlobalBounds().intersects(iterEnemies->rect.getGlobalBounds())) {
+					msgs.push_back(player.takeDamage(msg, iterEnemies->getAttackDamage()));
+					enemyCollisionClock.restart();
+					//player.rect.move(v * (player.getMovementSpeed() * iterEnemies->getMovementSpeed() * 10 ));
+				}
+			}
+		}
 
         // Fire (space bar)
 
-        if (elapsedFireClock.asSeconds() >= 10 / player.getProjectile().getRechargeSpeed()) { // for @small@ projectiles
+        if (fireclock.getElapsedTime().asSeconds() >= 10 / player.getProjectile().getRechargeSpeed()) { // for @small@ projectiles
             fireclock.restart();
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) &&
                 player.directionVector != sf::Vector2f(0, 0) )
@@ -132,53 +179,6 @@ int GameScene::Run(sf::RenderWindow &window) {
         }
 
         // ****************************
-        //          Collisions
-        // ****************************
-
-        // Entity Collides with block
-
-        counter = 0;
-        for (blockIterator = room.begin(); blockIterator != room.end(); blockIterator++, counter++) {
-            if(!room[counter].isBarrier)
-                continue;
-            if (player.intersects(room[counter])) {
-                player.backAway(player.getMovementSpeed());
-            }
-            counter2 = 0;
-            for (iterEnemies = enemies.begin(); iterEnemies != enemies.end(); iterEnemies++, counter2++) {
-                if (room[counter].intersects(enemies[counter2])) {
-                    enemies[counter2].backAway(enemies[counter2].getMovementSpeed());
-                }
-            }
-        }
-
-        // Projectile Collides with enemy
-
-        counter = 0;
-        for (iter = projectiles.begin(); iter != projectiles.end(); iter++, counter++) {
-            counter2 = 0;
-            for (iterEnemies = enemies.begin(); iterEnemies != enemies.end(); iterEnemies++, counter2++) {
-                if (projectiles[counter].intersects(enemies[counter2])) {
-                    enemies[counter2].takeDamage(msg, projectiles[counter].getAttackDamage(),
-                                                 enemies[counter2].rect.getPosition());
-                    projectiles[counter].destroy = true;
-                    if (enemies[counter2].destroy)
-                        addHint(hints, hint, "Player destroyed enemy", window.getSize().x);
-                    msgs.push_back(msg); // damage msg
-                }
-            }
-        }
-
-        // Enemy collides with player (player takes damage)
-        counter = 0;
-        for (iterEnemies = enemies.begin(); iterEnemies != enemies.end(); iterEnemies++, counter++) {
-            if (enemies[counter].intersects(player)) {
-                player.takeDamage(msg, enemies[counter].getAttackDamage());
-                msgs.push_back(msg);
-            }
-        }
-
-        // ****************************
         //          Destroying
         // ****************************
 
@@ -186,25 +186,21 @@ int GameScene::Run(sf::RenderWindow &window) {
         if (player.getHp() <= 0 && player.rect.getScale() != sf::Vector2f(0, 0))
             break; // the end of game
 
+
+		// Level up
 		if (enemies.size() == 0)
 		{
-			if (boss)
-				break;
-			Enemy chicken = enemy;
-			chicken.setHp(40);
-			chicken.setMovementSpeed(chicken.getMovementSpeed() * 2);
-			chicken.sprite.setScale(1.5, 1.5);
-			chicken.rect.setScale(1.5, 1.5);
-			chicken.setAttackDamage(3);
-			chicken.rect.setPosition(generateRandom(window.getSize().x - 100), generateRandom(window.getSize().y - 100));
-			enemies.push_back(chicken);
-			Projectile pr;
-			pr.setAttackDamage(2);
-			pr.setRechargeSpeed(pr.getRechargeSpeed() * 2);
-			pr.setName("QuickFire");
-			player.setProjectile(pr);
-			boss = true;
-			addHint(hints, hint, "Find main CHICKEN!", window.getSize().x);
+			level++;
+			addHint(hints, hint, "Level up!", window.getSize().x);
+			enemy.setHp(enemy.getHp() * 2);
+			enemy.setMovementSpeed(generateRandomFloat(1.0f, 1.5));
+			enemy.sprite.setScale(1.5, 1.5);
+			enemy.rect.setScale(1.6, 1.6);
+			for (int i = 0; i < enemiesCount; i++) {
+				enemy.rect.setPosition(static_cast<float>(generateRandom(window.getSize().x - 100)), static_cast<float>(generateRandom(window.getSize().y - 100)));
+				enemies.push_back(enemy);
+			}
+			player.setMovementSpeed(enemy.getMovementSpeed() * 1.4);
 		}
 
         destroyEntities<Projectile>(projectiles);
@@ -218,8 +214,8 @@ int GameScene::Run(sf::RenderWindow &window) {
         //          Hotkeys
         // ****************************
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && enemies.size() < 70 && !boss) {
-            enemy.rect.setPosition(generateRandom(window.getSize().x - 100), generateRandom(window.getSize().y - 100));
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && enemies.size() < 70) {
+            enemy.rect.setPosition(static_cast<float>(generateRandom(window.getSize().x - 100)), static_cast<float>(generateRandom(window.getSize().y - 100)));
             enemies.push_back(enemy);
         }
 
@@ -229,30 +225,30 @@ int GameScene::Run(sf::RenderWindow &window) {
         window.draw(background);
 
         // Drawing Player blocks
-        counter = 0;
-        for (blockIterator = room.begin(); blockIterator != room.end(); blockIterator++, counter++) {
-            window.draw(room[counter].rect);
+        for (auto blockIterator = room.begin(); blockIterator != room.end(); blockIterator++) {
+            window.draw(blockIterator->rect);
         }
         // Drawing projectiles
-        counter = 0;
-        for (iter = projectiles.begin(); iter != projectiles.end(); iter++, counter++) {
-            projectiles[counter].update();
-            window.draw(projectiles[counter].rect);
+        for (auto iterProjectiles = projectiles.begin(); iterProjectiles != projectiles.end(); iterProjectiles++) {
+            iterProjectiles->update();
+            window.draw(iterProjectiles->rect);
         }
 
         // Drawing enemies
-        counter = 0;
-        for (iterEnemies = enemies.begin(); iterEnemies != enemies.end(); iterEnemies++, counter++) {
-            enemies[counter].update();
-            window.draw(enemies[counter].sprite);
+		int count = 0, maxtargets = 3; // max enemies with target(player)
+		for (auto iterEnemies = enemies.begin(); iterEnemies != enemies.end(); iterEnemies++) {
+            iterEnemies->update();
+			if (count <= maxtargets - 1) {
+				iterEnemies->setTarget(player.rect);
+				count++;
+			}
+            window.draw(iterEnemies->sprite);
         }
 
         // Drawing damage
-        counter = 0;
-        for (textIterator = msgs.begin(); textIterator != msgs.end(); textIterator++) {
-            msgs[counter].update();
-            window.draw(msgs[counter].text);
-            counter++;
+        for (auto textIterator = msgs.begin(); textIterator != msgs.end(); textIterator++) {
+            textIterator->update();
+            window.draw(textIterator->text);
         }
         player.update();
 
@@ -270,15 +266,13 @@ int GameScene::Run(sf::RenderWindow &window) {
 
         gameInfo.setString(
                 "Hero HP: " + to_string(player.getHp()) + " | Enemies: " + to_string(enemies.size()) + " | Weapon: " +
-                player.getProjectile().getName());
+                player.getProjectile().getName() + " | Level: " + std::to_string(level) );
         window.draw(gameInfo);
 
 
         // Drawing hints
-        counter = 0;
-        for (hintIter = hints.begin(); hintIter != hints.end(); hintIter++) {
-            window.draw(hints[counter].text);
-            counter++;
+        for (auto hintIter = hints.begin(); hintIter != hints.end(); hintIter++) {
+            window.draw(hintIter->text);
         }
         view.setCenter(player.rect.getPosition());
         window.setView(view);
@@ -296,7 +290,7 @@ bool GameScene::destroyEntities(vector<entityType>& entities)
     bool destroyed = false;
     typename vector<entityType>::const_iterator entityIterator;
     int c = 0;
-    for (entityIterator = entities.begin(); entityIterator != entities.end(); entityIterator++) {
+    for (auto entityIterator = entities.begin(); entityIterator != entities.end(); entityIterator++) {
         if(entities[c].destroy)
         {
             entities.erase(entityIterator);
@@ -313,12 +307,11 @@ void GameScene::addHint(vector<textDisplay>& hints, textDisplay& hint, std::stri
     if(hints.size() > 10) {
         hints.erase(hints.begin());
     }
-    int counter = 0;
-    vector<textDisplay>::const_iterator hintIter;
-    for (hintIter = hints.begin(); hintIter != hints.end(); hintIter++) {
-        hints[counter].text.move(0, -15);
-        counter++;
-    }
+
+	for (auto hintIter = hints.begin(); hintIter != hints.end(); hintIter++)
+	{
+		hintIter->text.move(0, -15);
+	}
 
     hint.text.setString(txt);
     hint.text.setPosition(X_MAX - hint.text.getGlobalBounds().width - 50, 1000);

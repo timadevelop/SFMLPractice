@@ -22,7 +22,9 @@ private:
     // Variables
     sf::Clock fireclock;
     sf::Clock damageClock;
-    sf::Clock clock3;
+    sf::Clock enemyCollisionClock;
+	int enemiesCount = 10;
+	int level = 1;
     int counter = 0;
     int counter2 = 0;
     int counter3 = 0;
@@ -40,22 +42,22 @@ private:
 
     textDisplay hint; // hint proto
     vector<textDisplay> hints;
-    vector<textDisplay>::const_iterator hintIter;
+    vector<textDisplay>::iterator hintIter;
 
     Block block; // block proto
     vector<Block> room;
-    vector<Block>::const_iterator blockIterator;
+    vector<Block>::iterator blockIterator;
 
     Enemy enemy;
     vector<Enemy> enemies;
-    vector<Enemy>::const_iterator iterEnemies;
+    vector<Enemy>::iterator iterEnemies;
 
     // Projectile Vector Array
-    vector<Projectile>::const_iterator iter;
+    vector<Projectile>::iterator iterProjectiles;
     vector<Projectile> projectiles;
     // Text Vector Array
     textDisplay msg;     // msg prototype
-    vector<textDisplay>::const_iterator textIterator;
+    vector<textDisplay>::iterator textIterator;
     vector<textDisplay> msgs;
 
     Player player;

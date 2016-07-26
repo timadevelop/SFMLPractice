@@ -51,7 +51,7 @@ int TheEndScene::Run(sf::RenderWindow & window) {
     exitText.setPosition(window.getSize().x/2 - exitText.getGlobalBounds().width/2, window.getSize().y/2);
 
     // window title
-    sf::Text title = sf::Text("PLAYER IS DESTROYED", Font, 50);
+    sf::Text title = sf::Text("The end", Font, 50);
     title.setPosition(window.getSize().x/2 - title.getGlobalBounds().width/2, 20);
     std::string resultText = "Your score : " + to_string(result);
     sf::Text result = sf::Text(resultText, Font, 40);

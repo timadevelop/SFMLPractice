@@ -51,6 +51,7 @@ Projectile Player::fire(sf::RectangleShape projectileTarget){
     projectile.directionVector = vec / static_cast<float>(sqrt((vec.x*vec.x) + (vec.y*vec.y)));
     return projectile;
 }
+
 textDisplay Player::takeDamage(textDisplay& msg, int damage) {
 
     hp -= damage;
@@ -59,8 +60,7 @@ textDisplay Player::takeDamage(textDisplay& msg, int damage) {
     msg.text.setColor(sf::Color::Red);
     target = sf::RectangleShape(sf::Vector2f(0,0));
 
-    backAway(movementSpeed*5); // distance
-    return msg;
+	return msg;
 }
 
 void Player::update() {
@@ -90,46 +90,53 @@ void Player::updateMovement() {
     sf::Vector2f emptyVec = sf::Vector2f(0,0);
 
     // Boost
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift))
         movementSpeed = normalSpeed * 2;
     else if (movementSpeed > 1)
         movementSpeed = normalSpeed;
 
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	bool upKeyPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+	bool downKeyPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+	bool leftKeyPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+	bool rightKeyPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+
+	float dl = 2;
+	float diagl = dl / sqrt(2);
+    if(upKeyPressed)
     {
         target = sf::RectangleShape(emptyVec);
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            directionVector = sf::Vector2f(-1, -1);
+        if(leftKeyPressed) {
+            directionVector = sf::Vector2f(-diagl, -diagl);
         }
-        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
-            directionVector = sf::Vector2f(1, -1);
-        }
-        else{
-            directionVector = sf::Vector2f(0, -1);
-        }
-        rect.move(directionVector*movementSpeed);
-    }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-        target = sf::RectangleShape(emptyVec);
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            directionVector = sf::Vector2f(-1, 1);
-        }
-        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
-            directionVector = sf::Vector2f(1, 1);
+        else if(rightKeyPressed){
+            directionVector = sf::Vector2f(diagl, -diagl);
         }
         else{
-            directionVector = sf::Vector2f(0, 1);
+            directionVector = sf::Vector2f(0, -dl);
         }
         rect.move(directionVector*movementSpeed);
     }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+    else if(downKeyPressed) {
         target = sf::RectangleShape(emptyVec);
-        directionVector = sf::Vector2f(-1, 0);
+        if(leftKeyPressed) {
+            directionVector = sf::Vector2f(-diagl, diagl);
+        }
+        else if(rightKeyPressed){
+            directionVector = sf::Vector2f(diagl, diagl);
+        }
+        else{
+            directionVector = sf::Vector2f(0, dl);
+        }
         rect.move(directionVector*movementSpeed);
     }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+    else if(leftKeyPressed) {
         target = sf::RectangleShape(emptyVec);
-        directionVector = sf::Vector2f(1, 0);
+        directionVector = sf::Vector2f(-dl, 0);
+        rect.move(directionVector*movementSpeed);
+    }
+    else if(rightKeyPressed) {
+        target = sf::RectangleShape(emptyVec);
+        directionVector = sf::Vector2f(dl, 0);
         rect.move(directionVector*movementSpeed);
     }
     else if(target.getPosition() != emptyVec)
@@ -137,8 +144,7 @@ void Player::updateMovement() {
 
 
     // Rotating a player in motion
-    if( sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
-        sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || target.getPosition() != emptyVec)
+    if( directionVector != emptyVec || target.getPosition() != emptyVec)
     {
         if (directionVector.x <= 0)
             rotationFactor--;
@@ -154,7 +160,8 @@ void Player::updateMovement() {
 void Player::setTarget(sf::RectangleShape r) {
     target = r;
     sf::Vector2f vec = r.getPosition() - rect.getPosition();
-    directionVector = vec / static_cast<float>(sqrt((vec.x*vec.x) + (vec.y*vec.y)));
+	float length = static_cast<float>(sqrt((vec.x*vec.x) + (vec.y*vec.y)));
+    directionVector = sf::Vector2f(vec.x/length*2, vec.y/length*2);
 }
 
 void Player::draw(sf::RenderWindow* window){
@@ -177,8 +184,7 @@ void Player::draw(sf::RenderWindow* window){
     if(rotationAngle*rotationFactor == 360 || rotationAngle*rotationFactor == -360)
         rotationFactor = 0;
 
-    if( sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
-        sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || target.getPosition() != sf::Vector2f(0,0))
+    if( directionVector != sf::Vector2f(.0f, .0f) || target.getPosition() != sf::Vector2f(0,0))
     {
         Block block;
         block.transform = transform;

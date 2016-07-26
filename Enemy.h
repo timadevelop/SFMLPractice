@@ -16,9 +16,11 @@ class Enemy : public entity, public Organism
 private:
     int counter = 0; // for ai
     int movementLength = 100;
+	sf::RectangleShape target;
 public:
     Enemy();
     void update();
+	void setTarget(sf::RectangleShape);
 
     // sets random direction and moves enemy
     void updateMovement();

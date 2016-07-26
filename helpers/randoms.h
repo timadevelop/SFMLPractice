@@ -9,6 +9,7 @@
 
 int generateRandom0(int max);
 int generateRandom(int max);
+float generateRandomFloat(float max, float min);
 bool generateRandomBool(int max);
 
 #endif //GAME_RANDOMS_H

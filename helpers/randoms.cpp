@@ -15,6 +15,11 @@ int generateRandom(int max)
     return (r % max) + 1;
 }
 
+float generateRandomFloat(float max, float min)
+{
+	return static_cast<float>(((max - min)*(static_cast<float>(rand()) / RAND_MAX)) + min);
+}
+
 bool generateRandomBool(int max) {
     return generateRandom(max) == 1;
 }

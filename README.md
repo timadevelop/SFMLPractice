@@ -7,7 +7,7 @@ SFML downloads: http://www.sfml-dev.org/download.php
 ### Download
 Windows version: [Download](https://raw.githubusercontent.com/timadevelop/SFMLPractice/master/build/Release/win32_game.rar)
 
-Linux version: [Download](https://raw.githubusercontent.com/timadevelop/SFMLPractice/master/build/Release/linux_game.zip)
+Linux version: build it.  [Download](https://raw.githubusercontent.com/timadevelop/SFMLPractice/master/build/Release/linux_game.zip)
 
 ### Build with cmake
 ```bash

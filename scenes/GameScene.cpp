@@ -5,6 +5,9 @@
 #include "GameScene.h"
 #include "../helpers/randoms.h"
 
+
+std::vector<Block> generateRoom(sf::RenderWindow* window, std::vector<Block>::iterator blocksBegin, std::vector<Block>::iterator blocksEnd);
+
 int GameScene:: getResult()
 {
     return player.destroyedEnemies*enemy.getHp()*(player.getHp() > 1 ? player.getHp() : 1);
@@ -59,17 +62,18 @@ GameScene::GameScene(sf::RenderWindow &window) {
     // Player
 
     player.mainCircle.setPosition(window.getSize().x/2, window.getSize().y/2);
-	player.setMovementSpeed(enemy.getMovementSpeed()*1.4f);
+	//player.setMovementSpeed(enemy.getMovementSpeed()*1.4f);
     player.rect.setPosition(window.getSize().x/2, window.getSize().y/2);
     // Enemies
     enemy.sprite.setTexture(enemyTexture);
 	for (int i = 0; i <= enemiesCount; ++i) {
 		enemy.setMovementSpeed(generateRandomFloat(.5f, 1.0f));
-        enemy.rect.setPosition(static_cast<float>(generateRandom(window.getSize().x - 100)), static_cast<float>(generateRandom(window.getSize().y - 100)));
+        enemy.rect.setPosition(generateRandomFloat(enemy.rect.getSize().x + 10 ,window.getSize().x - 100), generateRandomFloat(enemy.rect.getSize().y + 10, window.getSize().y - 100));
         enemies.push_back(enemy);
     }
     msg.text.setFont(font);
     msg.text.setCharacterSize(13);
+
 }
 
 
@@ -77,8 +81,9 @@ int GameScene::Run(sf::RenderWindow &window) {
 
     window.setTitle("Game");
     window.setView(view);
-
 	int mouseDelta = 0;
+	int rooms = 0;
+	const int maxRooms = 4;
 	while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -100,10 +105,32 @@ int GameScene::Run(sf::RenderWindow &window) {
 			}
         }
 
-        window.clear();
+        window.clear(sf::Color(35, 38, 32));
 
-        
+		// ****************************
+		//          Hotkeys
+		// ****************************
 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && enemies.size() < 70) {
+			enemy.rect.setPosition(generateRandomFloat(enemy.rect.getSize().x + 10, window.getSize().x - 100), generateRandomFloat(enemy.rect.getSize().y + 10, window.getSize().y - 100));
+			enemies.push_back(enemy);
+		}
+
+		// enemies with target
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::L) && maxtargets > 1)
+			maxtargets--;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::H) && maxtargets < enemies.size())
+			maxtargets++;
+		
+		// ****************************
+		//          Rooms
+		// ****************************
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && sf::Keyboard::isKeyPressed(sf::Keyboard::R) && rooms < maxRooms)
+		{
+			rooms++;
+			std::vector<Block> newRooms = generateRoom(&window, room.begin(), room.end());
+			room.insert(room.end(), newRooms.begin(), newRooms.end());
+		}
 		// ****************************
 		//          Collisions
 		// ****************************
@@ -197,7 +224,7 @@ int GameScene::Run(sf::RenderWindow &window) {
 			enemy.sprite.setScale(1.5, 1.5);
 			enemy.rect.setScale(1.6, 1.6);
 			for (int i = 0; i < enemiesCount; i++) {
-				enemy.rect.setPosition(static_cast<float>(generateRandom(window.getSize().x - 100)), static_cast<float>(generateRandom(window.getSize().y - 100)));
+				enemy.rect.setPosition(generateRandomFloat(enemy.rect.getSize().x + 10, window.getSize().x - 100), generateRandomFloat(enemy.rect.getSize().y + 10, window.getSize().y - 100));
 				enemies.push_back(enemy);
 			}
 			player.setMovementSpeed(enemy.getMovementSpeed() * 1.4);
@@ -209,15 +236,6 @@ int GameScene::Run(sf::RenderWindow &window) {
             player.destroyedEnemies++;
 
         destroyEntities<textDisplay>(msgs);
-
-        // ****************************
-        //          Hotkeys
-        // ****************************
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && enemies.size() < 70) {
-            enemy.rect.setPosition(static_cast<float>(generateRandom(window.getSize().x - 100)), static_cast<float>(generateRandom(window.getSize().y - 100)));
-            enemies.push_back(enemy);
-        }
 
         // ****************************
         //          Drawing
@@ -235,10 +253,10 @@ int GameScene::Run(sf::RenderWindow &window) {
         }
 
         // Drawing enemies
-		int count = 0, maxtargets = 3; // max enemies with target(player)
+		int count = 0; // max enemies with target(player)
 		for (auto iterEnemies = enemies.begin(); iterEnemies != enemies.end(); iterEnemies++) {
             iterEnemies->update();
-			if (count <= maxtargets - 1) {
+			if (count <= maxtargets - 1 ) {
 				iterEnemies->setTarget(player.rect);
 				count++;
 			}
@@ -316,4 +334,89 @@ void GameScene::addHint(vector<textDisplay>& hints, textDisplay& hint, std::stri
     hint.text.setString(txt);
     hint.text.setPosition(X_MAX - hint.text.getGlobalBounds().width - 50, 1000);
     hints.push_back(hint);
+}
+
+
+std::vector<Block> generateRoom(sf::RenderWindow* window, std::vector<Block>::iterator blocksBegin, std::vector<Block>::iterator blocksEnd)
+{
+	int counter = 0;
+	std::vector<Block> room;
+
+	int brickSize = 30;
+	Block brick(brickSize, brickSize);
+	brick.isBarrier = true;
+	brick.rect.setFillColor(sf::Color(99, 103, 89, 150));
+	
+	bool fail = true;
+	int fails = 0;
+	const int maxFails = 10;
+	while (fail)
+	{
+		room.clear();
+		if (fails >= maxFails)
+			break;
+		int roomSize = generateRandomInt(5, 15);
+
+		int roomStartX = generateRandomInt(brickSize, window->getSize().x - (1 + roomSize) * brickSize)
+			, roomStartY = generateRandomInt(brickSize, window->getSize().y - (1 + roomSize)*brickSize);
+		int verticalDoorLocation = generateRandomInt(3, roomSize - 2);
+
+		counter = 1;
+		while (counter < roomSize) // horizotal
+		{
+			brick.rect.setPosition(brickSize * counter + roomStartX, roomStartY);
+			room.push_back(brick);
+
+			counter++;
+		}
+		counter = 0;
+		while (counter < roomSize)
+		{
+			brick.rect.setPosition(brickSize * counter + roomStartX, brickSize * roomSize + roomStartY);
+			room.push_back(brick);
+
+			counter++;
+		}
+
+		// vertical
+		counter = 0;
+		while (counter < roomSize)
+		{
+			brick.rect.setPosition(roomStartX, brickSize * counter + roomStartY);
+			room.push_back(brick);
+
+			counter++;
+		}
+		counter = 0;
+		while (counter < roomSize + 1)
+		{
+			if (counter == verticalDoorLocation)
+			{
+				counter += 2; continue;
+			}
+			brick.rect.setPosition(brickSize * roomSize + roomStartX, brickSize * counter + roomStartY);
+			room.push_back(brick);
+
+			counter++;
+		}
+
+
+		// if some block intersects another
+		fail = false;
+		for (auto iterRoom = room.begin(); iterRoom != room.end(); iterRoom++)
+		{
+			for (auto iterBlocks = blocksBegin; iterBlocks != blocksEnd; iterBlocks++)
+			{
+				if (iterRoom->rect.getGlobalBounds().intersects(iterBlocks->rect.getGlobalBounds()))
+				{
+					fail = true;
+					fails++;
+					break;
+				}
+			}
+			if (fail)
+				break;
+		}
+	}
+	return room;
 }

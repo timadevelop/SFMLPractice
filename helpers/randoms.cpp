@@ -4,20 +4,31 @@
 
 #include "randoms.h"
 
+#include <random>
+std::random_device rd;
+std::mt19937 mt(rd());
 int generateRandom0(int max)
 {
-    return rand() % max;
+	std::uniform_int_distribution<int> dist(0, max);
+	return dist(mt);
 }
 
 int generateRandom(int max)
 {
-    int r = rand();
-    return (r % max) + 1;
+	std::uniform_int_distribution<int> dist(0, max);
+	return dist(mt);
 }
 
-float generateRandomFloat(float max, float min)
+int generateRandomInt(int min ,int max)
 {
-	return static_cast<float>(((max - min)*(static_cast<float>(rand()) / RAND_MAX)) + min);
+	std::uniform_int_distribution<int> dist(min, max);
+	return dist(mt);
+}
+
+float generateRandomFloat(float min, float max)
+{
+	std::uniform_real_distribution<float> dist(min, max);
+	return dist(mt);
 }
 
 bool generateRandomBool(int max) {

@@ -24,6 +24,7 @@ private:
     sf::Clock damageClock;
     sf::Clock enemyCollisionClock;
 	int enemiesCount = 10;
+	int maxtargets = 3;
 	int level = 1;
     int counter = 0;
     int counter2 = 0;
